@@ -16,11 +16,11 @@
   <div id="swagger-ui"></div>
   <script src="https://unpkg.com/swagger-ui-dist@4.4.1/swagger-ui-bundle.js" crossorigin></script>
   <script src="https://unpkg.com/swagger-ui-dist@4.4.1/swagger-ui-standalone-preset.js" crossorigin></script>
-  <script>
+  <script type="module">
     window.onload = () => {
 	    
       window.ui = SwaggerUIBundle({
-        url: 'https://petstore.swagger.io/v2/swagger.json',
+        url: './api.json',
         dom_id: '#swagger-ui',
         presets: [
           SwaggerUIBundle.presets.apis,
