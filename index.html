@@ -18,9 +18,18 @@
   <script src="https://unpkg.com/swagger-ui-dist@4.4.1/swagger-ui-standalone-preset.js" crossorigin></script>
   <script>
     window.onload = () => {
+	    
       window.ui = SwaggerUIBundle({
-        url: 'https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/link-example.json',
+        url: 'https://petstore.swagger.io/v2/swagger.json',
         dom_id: '#swagger-ui',
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout",
       });
     };
   </script>
