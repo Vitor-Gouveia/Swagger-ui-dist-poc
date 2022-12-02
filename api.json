@@ -33,6 +33,24 @@
                 "$ref": "#/components/links/UserRepositories"
               }
             }
+          },
+          "400": {
+            "description": "errored this shit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errorcode": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }

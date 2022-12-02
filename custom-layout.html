@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="SwaggerIU" />
+  <title>SwaggerUI</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@4.4.1/swagger-ui.css" />
+  <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+  <script src='https://unpkg.com/babel-standalone@6.26.0/babel.js'></script>
+</head>
+
+<body>
+  <header>
+    <h1>exemplo de header da minu</h1>
+  </header>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist@4.4.1/swagger-ui-bundle.js" crossorigin></script>
+  <script src="https://unpkg.com/swagger-ui-dist@4.4.1/swagger-ui-standalone-preset.js" crossorigin></script>
+  <script type="text/babel">
+    class AugmentingLayout extends React.Component {
+        render() {
+          const {
+            getComponent
+          } = this.props
+          const BaseLayout = getComponent("BaseLayout", true)
+          return (
+            <div>
+              <BaseLayout />
+              <div className="myCustomHeader">
+                <h1>I have a custom header above Swagger-UI!</h1>
+              </div>
+            </div>
+          )
+        }
+      }
+
+    // Create the plugin that provides our layout component
+    const AugmentingLayoutPlugin = () => {
+        return {
+          components: {
+            AugmentingLayout: AugmentingLayout
+          }
+        }
+      }
+
+    window.onload = () => {
+      window.ui = SwaggerUIBundle({
+        url: './api.json',
+        dom_id: '#swagger-ui',
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl,
+          AugmentingLayoutPlugin
+        ],
+        layout: "AugmentingLayout",
+      });
+    };
+  </script>
+</body>
+
+</html>
