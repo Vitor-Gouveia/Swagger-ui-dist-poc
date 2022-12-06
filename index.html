@@ -7,13 +7,106 @@
   <meta name="description" content="SwaggerIU" />
   <title>SwaggerUI</title>
   <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@4.4.1/swagger-ui.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      background: #f1f1f1;
+    }
+
+    body {
+      padding: 40px;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+
+      font-family: sans-serif;
+    }
+
+    header {
+      width: 100%;
+    }
+
+    header img {
+      height: 40px;
+    }
+
+    header section {
+      max-width: 991px;
+      width: 100%;
+
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      justify-content: space-between;
+      margin: 0 auto;
+    }
+
+    main {
+      display: flex;
+      gap: 20px;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    aside {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      color: #fff;
+      background: #747474;
+      border-radius: 5px;
+
+      padding: 20px;
+    }
+
+    aside ul {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .topbar, .information-container {
+      display: none;
+    }
+
+    main aside {
+      width: 300px;
+    }
+
+    main #swagger-ui {
+      width: 100%;
+    }
+  </style>
 </head>
 
 <body>
   <header>
-    <h1>exemplo de header da minu</h1>
+    <section>
+      <img src="./logo_minu.biz.png" alt="">
+    </section>
   </header>
-  <div id="swagger-ui"></div>
+
+  <main>
+    <aside>
+      <ul></ul>
+    </aside>
+    <div id="swagger-ui"></div>
+  </main>
   <script src="https://unpkg.com/swagger-ui-dist@4.4.1/swagger-ui-bundle.js" crossorigin></script>
   <script src="https://unpkg.com/swagger-ui-dist@4.4.1/swagger-ui-standalone-preset.js" crossorigin></script>
   <script type="module">
@@ -33,6 +126,48 @@
       });
     };
   </script>
+  <script defer>
+    const fetchJSON = async () => {
+        const response = await fetch("./api.json")
+        const data = await response.text()
+        return data
+      }
+
+      const runTOC = async () => {
+        const json = await fetchJSON()
+        const obj = JSON.parse(json)
+        const formattedPaths = Object
+          .values(obj.paths)
+          .map(props => {
+            const [, operation] = Object.keys(props)
+
+            // const { title } = props
+            const { operationId } = props[operation]
+
+            return { title: operationId, slug: `operations-default-${operationId}` }
+          })
+
+        formattedPaths.forEach(path => {
+          const item = document.createElement("li")
+          const link = document.createElement("a")
+
+          link.href = `#${path.slug}`
+          link.innerText = path.title
+
+          item.appendChild(link)
+
+            document
+              .querySelector("aside ul")
+              .appendChild(item)
+        })
+        // document.getElementById('operations-default-mergePullRequest').scrollIntoView({
+        //   behavior: "smooth"
+        // });
+      }
+
+      runTOC()
+  </script>
 </body>
 
 </html>
+

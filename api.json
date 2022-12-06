@@ -6,6 +6,7 @@
   },
   "paths": {
     "/2.0/users/{username}": {
+      "title": "create user",
       "get": {
         "operationId": "getUserByName",
         "parameters": [
@@ -56,6 +57,7 @@
       }
     },
     "/2.0/repositories/{username}": {
+      "title": "create user",
       "get": {
         "operationId": "getRepositoriesByOwner",
         "parameters": [
@@ -91,6 +93,7 @@
       }
     },
     "/2.0/repositories/{username}/{slug}": {
+      "title": "create user",
       "get": {
         "operationId": "getRepository",
         "parameters": [
@@ -131,6 +134,7 @@
       }
     },
     "/2.0/repositories/{username}/{slug}/pullrequests": {
+      "title": "create user",
       "get": {
         "operationId": "getPullRequestsByRepository",
         "parameters": [
@@ -181,6 +185,7 @@
       }
     },
     "/2.0/repositories/{username}/{slug}/pullrequests/{pid}": {
+      "title": "create user",
       "get": {
         "operationId": "getPullRequestsById",
         "parameters": [
@@ -229,6 +234,7 @@
       }
     },
     "/2.0/repositories/{username}/{slug}/pullrequests/{pid}/merge": {
+      "title": "create user",
       "post": {
         "operationId": "mergePullRequest",
         "parameters": [
