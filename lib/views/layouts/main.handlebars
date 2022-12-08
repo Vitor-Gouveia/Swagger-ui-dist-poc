@@ -80,7 +80,8 @@
       gap: 15px;
     }
 
-    .topbar, .information-container {
+    .topbar,
+    .information-container {
       display: none;
     }
 
@@ -91,19 +92,29 @@
     main #swagger-ui {
       width: 100%;
     }
+
+    [data-code="400"] {
+      background: red;
+    }
   </style>
 </head>
 
 <body>
   <header>
     <section>
-      <img src="./logo_minu.biz.png" alt="">
+      <img src="/static/logo_minu.biz.png" alt="">
     </section>
   </header>
 
   <main>
     <aside>
-      <ul></ul>
+      <ul>
+        {{#each toc}}
+          <li>
+            <a href="#{{slug}}">{{title}}</a>
+          </li>
+        {{/each}}
+      </ul>
     </aside>
     <div id="swagger-ui"></div>
   </main>
@@ -113,7 +124,8 @@
     window.onload = () => {
 
       window.ui = SwaggerUIBundle({
-        url: './api.json',
+        url: 'http://localhost:3000/api' ,
+
         dom_id: '#swagger-ui',
         presets: [
           SwaggerUIBundle.presets.apis,
@@ -126,48 +138,6 @@
       });
     };
   </script>
-  <script defer>
-    const fetchJSON = async () => {
-        const response = await fetch("./api.json")
-        const data = await response.text()
-        return data
-      }
-
-      const runTOC = async () => {
-        const json = await fetchJSON()
-        const obj = JSON.parse(json)
-        const formattedPaths = Object
-          .values(obj.paths)
-          .map(props => {
-            const [, operation] = Object.keys(props)
-
-            // const { title } = props
-            const { operationId } = props[operation]
-
-            return { title: operationId, slug: `operations-default-${operationId}` }
-          })
-
-        formattedPaths.forEach(path => {
-          const item = document.createElement("li")
-          const link = document.createElement("a")
-
-          link.href = `#${path.slug}`
-          link.innerText = path.title
-
-          item.appendChild(link)
-
-            document
-              .querySelector("aside ul")
-              .appendChild(item)
-        })
-        // document.getElementById('operations-default-mergePullRequest').scrollIntoView({
-        //   behavior: "smooth"
-        // });
-      }
-
-      runTOC()
-  </script>
 </body>
 
 </html>
-
