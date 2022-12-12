@@ -108,6 +108,7 @@
     }
 
     main aside {
+      flex-shrink: 0;
       width: 300px;
     }
 
@@ -117,6 +118,10 @@
 
     .lv1-nesting {
       padding-left: 10px;
+    }
+
+    .lv2-nesting {
+      padding-left: 20px;
     }
 
     main #right {
@@ -194,6 +199,17 @@
           <li>
             <a href="#4">4. Autenticação</a>
           </li>
+          <li>
+            <a href="#5">5. Criação de Campanha - Listagem de recompensas</a>
+            <ul>
+              <li>
+                <a href="#5.1">5.1. Criação de Campanha</a>
+              </li>
+              <li>
+                <a href="#5.2">5.2. Consulta de Campanha</a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </div>
     </aside>
@@ -267,16 +283,43 @@
         <p>Na solicitação do token de acesso, será necessário o <strong>client_id</strong> e <strong>client_secret</strong>, fornecidos previamente pela Minu.</p>
       </section>
 
-      <div id="swagger-ui-api2"></div>
+      <div id="apis-auth"></div>
+
+      <hr />
+
+      <section>
+        <h1 id="5">5. Criação de Campanha - Listagem de recompensas</h1>
+        <p>Disponível para a criação e consulta de campanhas, seus endpoints são os seguintes:</p>
+        <ul style="list-style: disc; padding-left: 20px">
+          <li><strong>POST</strong> /minubiz/campaigns</li>
+          <li><strong>GET</strong> /minubiz/campaigns/:id</li>
+        </ul>
+        
+        <h3 class="lv1-nesting" id="5.1">5.1. Criação de Campanha</h3>
+        <p>Este recurso é dedicado para a criação de campanhas. Os dados requeridos para criar uma campanha mudam de acordo com o
+        seu tipo. Os tipos de campanha são os seguintes:</p>
+        <ul class="lv1-nesting" style="list-style: disc;">
+          <li><strong>Recompensa Única de Telefonia:</strong> neste tipo de campanha os consumidores finais recebem como recompensa bônus de telefonia
+          (voz, SMS ou dados) de acordo com a operadora de telefonia contratada;</li>
+
+          <li><strong>Recompensa Única:</strong> neste tipo de campanha o cliente corporativo define a recompensa que será para os consumidores
+          participantes da campanha;</li>
+
+          <li><strong>Recompensas de Múltipla Escolha:</strong> o cliente corporativo seleciona até 5 recompensas que irão compor a campanha
+          possibilitando que o consumidor final escolha a recompensa que mais lhe agradar.</li>
+        </ul>
+      </section>
+
+      <div id="apis-campaign"></div>
+      
+      <hr />
     </div>
   </main>
   <script src="https://unpkg.com/swagger-ui-dist@4.4.1/swagger-ui-bundle.js" crossorigin></script>
   <script src="https://unpkg.com/swagger-ui-dist@4.4.1/swagger-ui-standalone-preset.js" crossorigin></script>
   <script type="module">
     window.onload = () => {
-      window.ui = SwaggerUIBundle({
-        url: "http://localhost:3000/static/data.json",
-        dom_id: '#swagger-ui-api2',
+      const swaggerConfig = {
         presets: [
           SwaggerUIBundle.presets.apis,
           SwaggerUIStandalonePreset
@@ -285,44 +328,26 @@
           SwaggerUIBundle.plugins.DownloadUrl
         ],
         layout: "StandaloneLayout",
-      });
-    };
-  </script>
-  <script defer>
-    const fetchJSON = async (url) => {
-      const response = await fetch(url)
-      const data = await response.text()
-      return data
-    }
+      }
 
-    const runTOC = async () => {
-      const json = await fetchJSON("http://localhost:3000/api")
-      const obj = JSON.parse(json)
-      const formattedPaths = Object
-        .values(obj.paths)
-        .map(props => {
-          const [operation] = Object.keys(props)
-          // const { title } = props
-          const { operationId } = props[operation]
+      const startSwagger = ({ target: dom_id, url } ) => {
+        window.ui = SwaggerUIBundle({
+          url,
+          dom_id,
+          ...swaggerConfig
+        });
+      }
 
-          return { title: operationId, slug: `operations-default-${operationId}` }
-        })
-      
-      formattedPaths.forEach(path => {
-        const item = document.createElement("li")
-        const link = document.createElement("a")
-
-        link.href = `#${path.slug}`
-        link.innerText = path.title
-
-        item.appendChild(link)
-
-        document
-          .querySelector("aside ul")
-          .appendChild(item)
+      startSwagger({
+        target: "#apis-auth",
+        url: "/apis/auth"
       })
-    }
-    runTOC()
+
+      startSwagger({
+        target: "#apis-campaign",
+        url: "/apis/campaign"
+      })
+    };
   </script>
   <script defer>
     setTimeout(() => {
