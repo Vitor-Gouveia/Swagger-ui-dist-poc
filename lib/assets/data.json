@@ -1,1 +1,217 @@
-{"_id":"6392115283d34d9c9dc3e247","openapi":"3.0.0","info":{"title":"Link Example","version":"1.0.0"},"paths":{"/2.0/users/{username}":{"get":{"operationId":"getUserByName","parameters":[{"name":"username","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"The User","content":{"application/json":{"schema":{"$ref":"#/components/schemas/user"}}},"links":{"userRepositories":{"$ref":"#/components/links/UserRepositories"}}},"400":{"description":"algum erro tralalala","content":{"application/json":{"schema":{"type":"object","properties":{"errorcode":{"type":"string"},"message":{"type":"string"}}}}}}}}},"/2.0/repositories/{username}":{"get":{"operationId":"getRepositoriesByOwner","parameters":[{"name":"username","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"repositories owned by the supplied user","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/repository"}}}},"links":{"userRepository":{"$ref":"#/components/links/UserRepository"}}}}}},"/2.0/repositories/{username}/{slug}":{"get":{"operationId":"getRepository","parameters":[{"name":"username","in":"path","required":true,"schema":{"type":"string"}},{"name":"slug","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"The repository","content":{"application/json":{"schema":{"$ref":"#/components/schemas/repository"}}},"links":{"repositoryPullRequests":{"$ref":"#/components/links/RepositoryPullRequests"}}}}}},"/2.0/repositories/{username}/{slug}/pullrequests":{"get":{"operationId":"getPullRequestsByRepository","parameters":[{"name":"username","in":"path","required":true,"schema":{"type":"string"}},{"name":"slug","in":"path","required":true,"schema":{"type":"string"}},{"name":"state","in":"query","schema":{"type":"string","enum":["open","merged","declined"]}}],"responses":{"200":{"description":"an array of pull request objects","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/pullrequest"}}}}}}}},"/2.0/repositories/{username}/{slug}/pullrequests/{pid}":{"get":{"operationId":"getPullRequestsById","parameters":[{"name":"username","in":"path","required":true,"schema":{"type":"string"}},{"name":"slug","in":"path","required":true,"schema":{"type":"string"}},{"name":"pid","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"a pull request object","content":{"application/json":{"schema":{"$ref":"#/components/schemas/pullrequest"}}},"links":{"pullRequestMerge":{"$ref":"#/components/links/PullRequestMerge"}}}}}},"/2.0/repositories/{username}/{slug}/pullrequests/{pid}/merge":{"post":{"operationId":"mergePullRequest","parameters":[{"name":"username","in":"path","required":true,"schema":{"type":"string"}},{"name":"slug","in":"path","required":true,"schema":{"type":"string"}},{"name":"pid","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"204":{"description":"the PR was successfully merged"}}}}},"components":{"links":{"UserRepositories":{"operationId":"getRepositoriesByOwner","parameters":{"username":"$response.body#/username"}},"UserRepository":{"operationId":"getRepository","parameters":{"username":"$response.body#/owner/username","slug":"$response.body#/slug"}},"RepositoryPullRequests":{"operationId":"getPullRequestsByRepository","parameters":{"username":"$response.body#/owner/username","slug":"$response.body#/slug"}},"PullRequestMerge":{"operationId":"mergePullRequest","parameters":{"username":"$response.body#/author/username","slug":"$response.body#/repository/slug","pid":"$response.body#/id"}}},"schemas":{"user":{"type":"object","properties":{"username":{"type":"string"},"uuid":{"type":"string"}}},"repository":{"type":"object","properties":{"slug":{"type":"string"},"owner":{"$ref":"#/components/schemas/user"}}},"pullrequest":{"type":"object","properties":{"id":{"type":"integer"},"title":{"type":"string"},"repository":{"$ref":"#/components/schemas/repository"},"author":{"$ref":"#/components/schemas/user"}}}}}}
+{
+  "_id": "6392115283d34d9c9dc3e247",
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Link Example",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/oauth/token": {
+      "post": {
+        "operationId": "Autenticação",
+        "parameters": [
+          {
+            "name": "client_id",
+            "in": "path",
+            "required": true,
+            "description": "Identificador do Cliente Corporativo",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "client_secret",
+            "in": "path",
+            "required": true,
+            "description": "Chave ao client_id para acesso ao Token JWT",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": {
+                      "type": "string"
+                    },
+                    "expires_in": {
+                      "type": "number"
+                    },
+                    "token_type": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "access_token": "<access_token>",
+                  "expires_in": 86400,
+                  "token_type": "Bearer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campaigns": {
+      "get": {
+        "operationId": "Criação de Campanha",
+        "parameters": [
+          {
+            "name": "type",
+            "description": "<section><p>Tipos de campanhas. Pode ser um dos seguintes:</p><ul style='list-style: disc; padding-left: 20px'> <li><strong>Recompensa Única de Telefonia:</strong> pre-qualified-bonus</li><li><strong>Recompensa Única:</strong> pre-qualified-without-questions</li><li><strong>Recompensas de Múltipla Escolha:</strong> multiple-choice</li></ul> </section>",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "required": true,
+            "description": "Data no formato ISO 8601 que define o início da vigência da campanha. Deve ser superior a data e horário atual.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "description": "Data no formato ISO 8601 que define o final da vigência da campanha. Deve ser superior a startDate.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expectedReach",
+            "required": true,
+            "description": "Número de consumidores que o Cliente Corporativo planeja atingir com a campanha.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "experience",
+            "required": true,
+            "description": "<section> Contém o <strong>título da campanha</strong> e o <strong>nome da marca</strong> que será a assinatura do Cliente que está criando a campanha. Exemplo de experience com as strings title e sponsor:<br><code> experience: { <br>'title': 'R$10 em bônus a cada R$100 em compras',<br> 'sponsor': 'Conveniência Central' <br>}</code></section>",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The User",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/user"
+                }
+              }
+            },
+            "links": {
+              "userRepositories": {
+                "$ref": "#/components/links/UserRepositories"
+              }
+            }
+          },
+          "400": {
+            "description": "algum erro tralalala",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errorcode": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "links": {
+      "UserRepositories": {
+        "operationId": "getRepositoriesByOwner",
+        "parameters": {
+          "username": "$response.body#/username"
+        }
+      },
+      "UserRepository": {
+        "operationId": "getRepository",
+        "parameters": {
+          "username": "$response.body#/owner/username",
+          "slug": "$response.body#/slug"
+        }
+      },
+      "RepositoryPullRequests": {
+        "operationId": "getPullRequestsByRepository",
+        "parameters": {
+          "username": "$response.body#/owner/username",
+          "slug": "$response.body#/slug"
+        }
+      },
+      "PullRequestMerge": {
+        "operationId": "mergePullRequest",
+        "parameters": {
+          "username": "$response.body#/author/username",
+          "slug": "$response.body#/repository/slug",
+          "pid": "$response.body#/id"
+        }
+      }
+    },
+    "schemas": {
+      "user": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "uuid": {
+            "type": "string"
+          }
+        }
+      },
+      "repository": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/user"
+          }
+        }
+      },
+      "pullrequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "repository": {
+            "$ref": "#/components/schemas/repository"
+          },
+          "author": {
+            "$ref": "#/components/schemas/user"
+          }
+        }
+      }
+    }
+  }
+}

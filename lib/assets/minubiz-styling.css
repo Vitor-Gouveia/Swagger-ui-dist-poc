@@ -1,0 +1,124 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Montserrat";
+  box-sizing: border-box;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+html {
+  background: #fff;
+}
+
+main {
+  display: flex;
+  gap: 20px;
+}
+
+aside {
+  color: #5C666F;
+  background: #EEEEEE;
+  padding: 20px;
+
+  position: sticky;
+  top: 0px;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
+  flex-shrink: 0;
+  width: 250px;
+}
+
+aside a {
+  display: flex;
+  height: max-content;
+}
+
+aside img {
+  width: 100%;
+  height: auto;
+}
+
+aside ul {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+aside ul a:hover {
+  color: #0c0e0f
+}
+
+#right {
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#right section:not(#apis section) {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+section > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* utils */
+.lv1-nesting {
+  padding-left: 20px;
+}
+
+.lv2-nesting {
+  padding-left: 40px;
+}
+
+/* editing swagger elements */
+.topbar,
+.information-container {
+  display: none;
+}
+
+.swagger-ui .wrapper {
+  padding: 0px;
+}
+
+[data-code="400"] {
+  border: 1px solid hsl(360, 99%, 69%);
+  background: hsla(360, 100%, 70%, 0.4);
+}
+
+.opblock-tag-section h3 {
+  display: none !important;
+}
+
+.opblock-summary-path {
+  flex-shrink: 1 !important;
+  max-width: none !important;
+}
+
+.operation-tag-content > span {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.models {
+  margin-bottom: 0px !important;
+}
