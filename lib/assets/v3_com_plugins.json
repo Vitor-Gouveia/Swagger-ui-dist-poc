@@ -1,0 +1,1117 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "api-dev.minu.biz",
+    "version" : "2022-11-23T13:40:19Z"
+  },
+  "servers" : [ {
+    "url" : "https://api-dev.minu.biz"
+  } ],
+  "paths" : {
+    "/v1/campaign/{id}" : {
+      "get" : {
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "404" : {
+            "description" : "404 response",
+            "content" : { }
+          },
+          "200" : {
+            "description" : "200 response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResponseGetCampaignById"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "400 response",
+            "content" : { }
+          },
+          "401" : {
+            "description" : "401 response",
+            "content" : { }
+          },
+          "500" : {
+            "description" : "500 response",
+            "content" : { }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "httpMethod" : "GET",
+          "uri" : "https://api-dev.bonuz.com/minubiz/campaigns/{id}",
+          "responses" : {
+            "200" : {
+              "statusCode" : "200",
+              "responseTemplates" : {
+                "application/json" : "#set($inputRoot = $input.path('$'))\n\n#if ($inputRoot.status.detail.description == 'Success')\n  #set($statusDetailDescription = 'Success')\n#else\n  #set($statusDetailDescription = 'Fail')\n#end\n\n\n#foreach($template in $inputRoot.templates)\n    #if ($template.key == 'triggerConfigs')\n        #set($triggerConfigs = $template)\n    #end\n#end\n\n\n{\n    \"id\": \"$inputRoot.id\",\n    \"startDate\": \"$inputRoot.startDate\",\n    \"endDate\": \"$inputRoot.endDate\",\n    \"expectedReach\": $inputRoot.expectedReach,\n    \"experienceName\": \"$inputRoot.experienceName\",\n    \"createdAt\": \"$inputRoot.createdAt\",\n    \"type\": \"$inputRoot.type\",\n    \"status\": {\n        \"name\": \"$inputRoot.status.name\",\n        \"timestamp\": \"$inputRoot.status.timestamp\",\n        \"detail\": {\n            \"description\": \"$statusDetailDescription\"\n        }\n    },\n    \"settings\": {\n        #foreach($parameter in $triggerConfigs.parameters)\n            #if( $parameter.key == 'prizes' || $parameter.key == 'defaultPrizeList' || $parameter.key == 'limit' )\n                \"$parameter.key\": $parameter.value#if( $foreach.hasNext ),#end\n            #else\n                \"$parameter.key\": \"$parameter.value\"#if( $foreach.hasNext ),#end\n            #end\n        #end\n    }\n}"
+              }
+            },
+            "400" : {
+              "statusCode" : "400"
+            },
+            "401" : {
+              "statusCode" : "401"
+            },
+            "404" : {
+              "statusCode" : "404"
+            },
+            "5\\d{2}" : {
+              "statusCode" : "500"
+            }
+          },
+          "requestParameters" : {
+            "integration.request.header.Authorization" : "method.request.header.Authorization",
+            "integration.request.path.id" : "method.request.path.id"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "http"
+        }
+      }
+    },
+    "/offer" : {
+      "get" : {
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Empty"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "httpMethod" : "POST",
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:993045863210:function:teste_caetano_pan/invocations",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            }
+          },
+          "passthroughBehavior" : "when_no_match",
+          "contentHandling" : "CONVERT_TO_TEXT",
+          "type" : "aws_proxy"
+        }
+      }
+    },
+    "/v1/oauth/token" : {
+      "post" : {
+        "parameters" : [ {
+          "name" : "x-id",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "Content-Type",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "x-encrypted",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RequestAuth0Token"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResponseAuth0Token"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-request-validator" : "Validar corpo, parâmetros de string de consulta e cabeçalhos",
+        "x-amazon-apigateway-integration" : {
+          "httpMethod" : "POST",
+          "uri" : "https://api-dev.bonuz.com/business-api/oauth/token",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200",
+              "responseTemplates" : {
+                "application/json" : "#set($inputRoot = $input.path('$'))\n#set($xEncryptedHeader = $input.params().header.get('x-encrypted').trim())\n#set($xIdHeader = $input.params().header.get('x-id').trim())\n\n#if ($xEncryptedHeader == \"true\" && $xIdHeader != \"\")\n{\n  \"encryptedData\": $input.json('$.encryptedData')\n}\n#else\n{\n \"access_token\" : $input.json('$.access_token'),\n  \"expires_in\" : $input.json('$.expires_in'),\n  \"token_type\": \"Bearer\"\n}\n#end"
+              }
+            }
+          },
+          "requestParameters" : {
+            "integration.request.header.x-encrypted" : "method.request.header.x-encrypted",
+            "integration.request.header.x-id" : "method.request.header.x-id",
+            "integration.request.header.Content-Type" : "method.request.header.Content-Type"
+          },
+          "requestTemplates" : {
+            "application/json" : "#set($inputRoot = $input.path('$'))\n#set($xEncryptedHeader = $input.params().header.get('x-encrypted').trim())\n#set($xIdHeader = $input.params().header.get('x-id').trim())\n\n#if ($xEncryptedHeader == \"true\" && $xIdHeader != \"\")\n{\n    \"encryptedPayload\": $input.json('$.encryptedPayload')\n}\n#else\n{\n    \"client_id\": \"$inputRoot.client_id\",\n    \"client_secret\" : \"$inputRoot.client_secret\"\n}\n#end"
+          },
+          "passthroughBehavior" : "when_no_templates",
+          "type" : "http"
+        }
+      }
+    },
+    "/v1/prizes" : {
+      "get" : {
+        "parameters" : [ {
+          "name" : "x-id",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "Content-Type",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "x-encrypted",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResponsePrizes"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "httpMethod" : "GET",
+          "uri" : "https://api-dev.bonuz.com/business-api/prizes",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            }
+          },
+          "requestParameters" : {
+            "integration.request.header.Authorization" : "method.request.header.Authorization",
+            "integration.request.header.x-encrypted" : "method.request.header.x-encrypted",
+            "integration.request.header.x-id" : "method.request.header.x-id",
+            "integration.request.header.Content-Type" : "method.request.header.Content-Type"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "http"
+        }
+      }
+    },
+    "/v1/campaign" : {
+      "post" : {
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RequestCreateCampaign"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResponseCreateCampaign"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-request-validator" : "Validar corpo, parâmetros de string de consulta e cabeçalhos",
+        "x-amazon-apigateway-integration" : {
+          "httpMethod" : "POST",
+          "uri" : "https://api-dev.bonuz.com/minubiz/campaigns",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            }
+          },
+          "requestParameters" : {
+            "integration.request.header.Authorization" : "method.request.header.Authorization"
+          },
+          "requestTemplates" : {
+            "application/json" : "#set($body = $input.path('$'))\n#set($body.origin = \"api-gateway-minubiz\")\n$input.json('$')"
+          },
+          "passthroughBehavior" : "when_no_templates",
+          "type" : "http"
+        }
+      }
+    },
+    "/v1/experiences/{experienceName}/requests/{requestId}" : {
+      "get" : {
+        "parameters" : [ {
+          "name" : "experienceName",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "x-id",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "x-encrypted",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "requestId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Empty"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "httpMethod" : "GET",
+          "uri" : "https://api-dev.bonuz.com/business-api/experiences/{experienceName}/requests/{requestId}",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            }
+          },
+          "requestParameters" : {
+            "integration.request.path.requestId" : "method.request.path.requestId",
+            "integration.request.path.experienceName" : "method.request.path.experienceName",
+            "integration.request.header.Authorization" : "method.request.header.Authorization",
+            "integration.request.header.x-encrypted" : "method.request.header.x-encrypted",
+            "integration.request.header.x-id" : "method.request.header.x-id"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "http"
+        }
+      }
+    },
+    "/codes" : {
+      "post" : {
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RequestCodes"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "404" : {
+            "description" : "404 response",
+            "content" : { }
+          },
+          "200" : {
+            "description" : "200 response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Empty"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "400 response",
+            "content" : { }
+          },
+          "401" : {
+            "description" : "401 response",
+            "content" : { }
+          },
+          "500" : {
+            "description" : "500 response",
+            "content" : { }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "httpMethod" : "POST",
+          "uri" : "https://io-dev.minu.biz/codes",
+          "responses" : {
+            "200" : {
+              "statusCode" : "200"
+            },
+            "400" : {
+              "statusCode" : "400"
+            },
+            "401" : {
+              "statusCode" : "401"
+            },
+            "404" : {
+              "statusCode" : "404"
+            },
+            "^[5][0-9][0-9]$|^[4][0][2-9]$|^[4][1-9][0-9]$" : {
+              "statusCode" : "500"
+            }
+          },
+          "requestParameters" : {
+            "integration.request.header.Authorization" : "method.request.header.Authorization"
+          },
+          "requestTemplates" : {
+            "application/json" : "$input.json('$')"
+          },
+          "passthroughBehavior" : "when_no_templates",
+          "timeoutInMillis" : 2000,
+          "type" : "http"
+        }
+      }
+    },
+    "/chapter" : {
+      "get" : {
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Empty"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "httpMethod" : "POST",
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:993045863210:function:ChapterTeste/invocations",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            }
+          },
+          "passthroughBehavior" : "when_no_match",
+          "contentHandling" : "CONVERT_TO_TEXT",
+          "type" : "aws"
+        }
+      }
+    },
+    "/codes/validate" : {
+      "post" : {
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "404" : {
+            "description" : "404 response",
+            "content" : { }
+          },
+          "200" : {
+            "description" : "200 response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Empty"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "400 response",
+            "content" : { }
+          },
+          "401" : {
+            "description" : "401 response",
+            "content" : { }
+          },
+          "500" : {
+            "description" : "500 response",
+            "content" : { }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "httpMethod" : "POST",
+          "uri" : "https://io-dev.minu.biz/codes/validate",
+          "responses" : {
+            "200" : {
+              "statusCode" : "200"
+            },
+            "400" : {
+              "statusCode" : "400"
+            },
+            "401" : {
+              "statusCode" : "401"
+            },
+            "404" : {
+              "statusCode" : "404"
+            },
+            "^[5][0-9][0-9]$|^[4][0][2-9]$|^[4][1-9][0-9]$" : {
+              "statusCode" : "500"
+            }
+          },
+          "requestParameters" : {
+            "integration.request.header.Authorization" : "method.request.header.Authorization"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "timeoutInMillis" : 2000,
+          "type" : "http"
+        }
+      }
+    },
+    "/v1/requests" : {
+      "post" : {
+        "parameters" : [ {
+          "name" : "x-id",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "x-encrypted",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RequestMinubizApi"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Empty"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "400 response",
+            "content" : { }
+          },
+          "500" : {
+            "description" : "500 response",
+            "content" : { }
+          },
+          "401" : {
+            "description" : "401 response",
+            "content" : { }
+          }
+        },
+        "x-amazon-apigateway-request-validator" : "Validar corpo, parâmetros de string de consulta e cabeçalhos",
+        "x-amazon-apigateway-integration" : {
+          "httpMethod" : "POST",
+          "uri" : "https://api-dev.bonuz.com/business-api/requests",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200",
+              "responseTemplates" : {
+                "application/json" : "#set($inputRoot = $input.path('$'))\n#set($xEncryptedHeader = $input.params().header.get('x-encrypted').trim())\n#set($xIdHeader = $input.params().header.get('x-id').trim())\n\n#if ($xEncryptedHeader == \"true\" && $xIdHeader != \"\")\n{\n  \"encryptedData\": $input.json('$.encryptedData')\n}\n#else\n{\n  \"_id\" : $input.json('$._id'),\n  \"requestId\" : $input.json('$._id'),\n  \"experience\" : $input.json('$.experience.name')\n}\n#end"
+              }
+            },
+            "400" : {
+              "statusCode" : "400"
+            },
+            "401" : {
+              "statusCode" : "401"
+            },
+            "^[5][0-9][0-9]$|^[4][0][2-9]$|^[4][1-9][0-9]$" : {
+              "statusCode" : "500",
+              "responseTemplates" : {
+                "application/json" : "{\"description\": \"Internal Server Error\"}"
+              }
+            }
+          },
+          "requestParameters" : {
+            "integration.request.header.Authorization" : "method.request.header.Authorization",
+            "integration.request.header.x-encrypted" : "method.request.header.x-encrypted",
+            "integration.request.header.x-id" : "method.request.header.x-id"
+          },
+          "requestTemplates" : {
+            "application/json" : "#set($inputRoot = $input.path('$'))\n#set($xEncryptedHeader = $input.params().header.get('x-encrypted').trim())\n#set($xIdHeader = $input.params().header.get('x-id').trim())\n\n#if ($xEncryptedHeader == \"true\" && $xIdHeader != \"\")\n{\n    \"encryptedPayload\": $input.json('$.encryptedPayload')\n}\n#else\n{\n    \"event\": \"reward-given\",\n    \"experience\" : \"$inputRoot.experience\",\n    \"registeredCallbackUrl\":\"$inputRoot.registeredCallbackUrl\",\n    \"processedCallbackUrl\":\"$inputRoot.processedCallbackUrl\",\n    \"data\": $input.json('$.data'),\n    \"source\": {\n        \"origin\": \"minubiz-api-v1\",\n        \"url\": \"/v1/requests\"\n    }\n}\n#end"
+          },
+          "passthroughBehavior" : "when_no_templates",
+          "type" : "http"
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Empty" : {
+        "title" : "Empty Schema",
+        "type" : "object"
+      },
+      "ResponseCreateCampaign" : {
+        "required" : [ "campaignId" ],
+        "type" : "object",
+        "properties" : {
+          "campaignId" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Retorno da rota de criação de campanha"
+      },
+      "RequestMinubizApi" : {
+        "properties" : {
+          "experience" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : ""
+          },
+          "registeredCallbackUrl" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Endpoint para envio do callback com informações do registro do trigger (opcional)",
+            "format" : "uri"
+          },
+          "processedCallbackUrl" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Endpoint para envio do callback com informações do processamento do trigger (opcional)",
+            "format" : "uri"
+          },
+          "data" : {
+            "type" : "object",
+            "properties" : {
+              "mobile" : {
+                "type" : "string",
+                "description" : "Número do celular do consumidor bonificado"
+              },
+              "email" : {
+                "type" : "string",
+                "description" : "Endereço de email consumidor bonificado"
+              },
+              "order_id" : {
+                "type" : "string",
+                "description" : "ID do pedido que deve ser único por campanha"
+              },
+              "reward_value" : {
+                "type" : "integer",
+                "description" : "Valor da bonificação quando a recompensa não possui valor fixo"
+              }
+            },
+            "anyOf" : [ {
+              "required" : [ "mobile", "order_id" ],
+              "type" : "object"
+            }, {
+              "required" : [ "email", "order_id" ],
+              "type" : "object"
+            } ]
+          },
+          "encryptedPayload" : {
+            "type" : "object"
+          }
+        },
+        "additionalProperties" : false,
+        "oneOf" : [ {
+          "required" : [ "data", "experience" ],
+          "type" : "object"
+        }, {
+          "required" : [ "encryptedPayload" ],
+          "type" : "object"
+        } ]
+      },
+      "RequestAuth0Token" : {
+        "type" : "object",
+        "properties" : {
+          "client_id" : {
+            "type" : "string"
+          },
+          "client_secret" : {
+            "type" : "string"
+          },
+          "audience" : {
+            "type" : "string"
+          },
+          "grant_type" : {
+            "type" : "string"
+          },
+          "encryptedPayload" : {
+            "type" : "object"
+          }
+        },
+        "oneOf" : [ {
+          "required" : [ "client_id", "client_secret" ],
+          "type" : "object"
+        }, {
+          "required" : [ "encryptedPayload" ],
+          "type" : "object"
+        } ]
+      },
+      "RequestCreateCampaign" : {
+        "required" : [ "endDate", "experience", "settings", "startDate", "type" ],
+        "type" : "object",
+        "properties" : {
+          "startDate" : {
+            "type" : "string"
+          },
+          "endDate" : {
+            "type" : "string"
+          },
+          "reach" : {
+            "type" : "object",
+            "properties" : {
+              "total" : {
+                "type" : "integer"
+              },
+              "expected" : {
+                "type" : "integer"
+              }
+            }
+          },
+          "experience" : {
+            "required" : [ "sponsor", "title" ],
+            "type" : "object",
+            "properties" : {
+              "title" : {
+                "type" : "string"
+              },
+              "sponsor" : {
+                "type" : "string",
+                "description" : "Describes who's the campaign sponsor title"
+              }
+            },
+            "description" : "Basic informations for campaign"
+          },
+          "settings" : {
+            "type" : "object",
+            "description" : "Settings for the campaign",
+            "oneOf" : [ {
+              "required" : [ "rewardLimit" ],
+              "type" : "object",
+              "properties" : {
+                "rewardLimit" : {
+                  "required" : [ "period", "quantity" ],
+                  "type" : "object",
+                  "properties" : {
+                    "quantity" : {
+                      "type" : "integer"
+                    },
+                    "period" : {
+                      "type" : "string",
+                      "enum" : [ "daily", "weekly", "monthly", "once" ]
+                    }
+                  }
+                }
+              },
+              "additionalProperties" : false,
+              "description" : "Settings for the campaign type pre-qualified-bonus"
+            }, {
+              "required" : [ "preQualifiedPrize", "rewardLimit" ],
+              "type" : "object",
+              "properties" : {
+                "rewardLimit" : {
+                  "required" : [ "period", "quantity" ],
+                  "type" : "object",
+                  "properties" : {
+                    "quantity" : {
+                      "type" : "integer"
+                    },
+                    "period" : {
+                      "type" : "string",
+                      "enum" : [ "daily", "weekly", "monthly", "once" ]
+                    }
+                  }
+                },
+                "preQualifiedPrize" : {
+                  "type" : "string"
+                }
+              },
+              "description" : "Settings for the campaign type pre-qualified-without-questions"
+            }, {
+              "required" : [ "defaultPrizeList", "prizes", "rewardLimit" ],
+              "type" : "object",
+              "properties" : {
+                "rewardLimit" : {
+                  "required" : [ "period", "quantity" ],
+                  "type" : "object",
+                  "properties" : {
+                    "quantity" : {
+                      "type" : "integer"
+                    },
+                    "period" : {
+                      "type" : "string",
+                      "enum" : [ "daily", "weekly", "monthly", "once" ]
+                    }
+                  }
+                },
+                "defaultPrizeList" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string"
+                  }
+                },
+                "prizes" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string"
+                  }
+                }
+              },
+              "description" : "Settings for the campaign type multiple-choice"
+            } ]
+          }
+        },
+        "description" : "Representa a requisição feita para criação de campanha"
+      },
+      "RequestCodes" : {
+        "required" : [ "cnpj" ],
+        "type" : "object",
+        "properties" : {
+          "cnpj" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Representa a requisição feita para criação de campanha"
+      },
+      "ResponseGetCampaignById" : {
+        "required" : [ "createdAt", "endDate", "expectedReach", "experience", "experienceName", "settings", "startDate", "status", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Identificador da campanha"
+          },
+          "startDate" : {
+            "type" : "string",
+            "description" : "Data no formato ISO 8601 que define o início da vigência da campanha"
+          },
+          "endDate" : {
+            "type" : "string",
+            "description" : "Data no formato ISO 8601 que define o final da vigência da campanha"
+          },
+          "expectedReach" : {
+            "type" : "integer",
+            "description" : "Número de consumidores em que se planeja atingir com a campanha."
+          },
+          "experience" : {
+            "required" : [ "sponsor", "title" ],
+            "type" : "object",
+            "properties" : {
+              "title" : {
+                "type" : "string",
+                "description" : "Título da campanha"
+              },
+              "sponsor" : {
+                "type" : "string",
+                "description" : "Nome da marca da campanha"
+              }
+            },
+            "description" : "Basic informations for campaign"
+          },
+          "experienceName" : {
+            "type" : "string",
+            "description" : "Identificador da experiência utilizada na campanha"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "description" : "Data no formato ISO 8601 que define o momento que a campanha foi criada"
+          },
+          "status" : {
+            "type" : "object",
+            "properties" : {
+              "name" : {
+                "type" : "string",
+                "description" : "Nome do status da campanha"
+              },
+              "timestamp" : {
+                "type" : "string",
+                "description" : "Data no formato ISO 8601 que define o momento que aquele status foi alcançado."
+              },
+              "detail" : {
+                "type" : "object",
+                "properties" : {
+                  "description" : {
+                    "type" : "string",
+                    "description" : "Descrição dos detalhes do status."
+                  }
+                },
+                "description" : "Detalhes sobre o status da campanha."
+              }
+            },
+            "description" : "Status da campanha no momento da consulta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Tipo de mecânica da campanha. Ex: multiple-choice (múltipla escolha), Recompensa Única ( type pre-qualified-without-questions)"
+          },
+          "settings" : {
+            "type" : "object",
+            "description" : "Configuração da mecânica de entrega da campanha",
+            "oneOf" : [ {
+              "required" : [ "rewardLimit" ],
+              "type" : "object",
+              "properties" : {
+                "rewardLimit" : {
+                  "required" : [ "period", "quantity" ],
+                  "type" : "object",
+                  "properties" : {
+                    "quantity" : {
+                      "type" : "integer"
+                    },
+                    "period" : {
+                      "type" : "string",
+                      "enum" : [ "daily", "weekly", "monthly", "once" ]
+                    }
+                  }
+                }
+              },
+              "additionalProperties" : false,
+              "description" : "Configuração para o tipo de campanha pre-qualified-bonus"
+            }, {
+              "required" : [ "preQualifiedPrize", "rewardLimit" ],
+              "type" : "object",
+              "properties" : {
+                "rewardLimit" : {
+                  "required" : [ "period", "quantity" ],
+                  "type" : "object",
+                  "properties" : {
+                    "quantity" : {
+                      "type" : "integer"
+                    },
+                    "period" : {
+                      "type" : "string",
+                      "enum" : [ "daily", "weekly", "monthly", "once" ]
+                    }
+                  }
+                },
+                "preQualifiedPrize" : {
+                  "type" : "string"
+                }
+              },
+              "description" : "Configuração para o tipo de campanha pre-qualified-without-questions"
+            }, {
+              "required" : [ "defaultPrizeList", "prizes", "rewardLimit" ],
+              "type" : "object",
+              "properties" : {
+                "rewardLimit" : {
+                  "required" : [ "period", "quantity" ],
+                  "type" : "object",
+                  "properties" : {
+                    "quantity" : {
+                      "type" : "integer"
+                    },
+                    "period" : {
+                      "type" : "string",
+                      "enum" : [ "daily", "weekly", "monthly", "once" ]
+                    }
+                  }
+                },
+                "defaultPrizeList" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string"
+                  }
+                },
+                "prizes" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string"
+                  }
+                }
+              },
+              "description" : "Configuração para o tipo de campanha multiple-choice"
+            } ]
+          }
+        },
+        "description" : "Representa a resposta da requisição feita para consulta de campanha"
+      },
+      "ResponsePrizes" : {
+        "properties" : {
+          "title" : {
+            "type" : "string"
+          },
+          "category" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "prizes" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "faceValue", "name", "price", "processingFee", "title" ],
+              "type" : "object",
+              "properties" : {
+                "title" : {
+                  "type" : "string"
+                },
+                "faceValue" : {
+                  "type" : "number"
+                },
+                "price" : {
+                  "type" : "number"
+                },
+                "name" : {
+                  "type" : "string"
+                },
+                "processingFee" : {
+                  "type" : "number"
+                }
+              }
+            }
+          },
+          "encryptedData" : {
+            "type" : "string"
+          }
+        },
+        "oneOf" : [ {
+          "required" : [ "category", "description", "prizes", "title" ],
+          "type" : "object"
+        }, {
+          "required" : [ "encryptedData" ],
+          "type" : "object"
+        } ]
+      },
+      "ResponseAuth0Token" : {
+        "type" : "object",
+        "properties" : {
+          "access_token" : {
+            "type" : "string"
+          },
+          "scope" : {
+            "type" : "string"
+          },
+          "expires_in" : {
+            "type" : "integer"
+          },
+          "token_type" : {
+            "type" : "string"
+          },
+          "encryptedData" : {
+            "type" : "string"
+          }
+        },
+        "oneOf" : [ {
+          "required" : [ "access_token", "expires_in", "token_type" ],
+          "type" : "object"
+        }, {
+          "required" : [ "encryptedData" ],
+          "type" : "object"
+        } ]
+      }
+    }
+  },
+  "x-amazon-apigateway-documentation" : {
+    "version" : "1",
+    "createdDate" : "2022-10-20T19:45:19Z",
+    "documentationParts" : [ {
+      "location" : {
+        "type" : "RESOURCE",
+        "path" : "/campaigns"
+      },
+      "properties" : {
+        "description" : "teste"
+      }
+    }, {
+      "location" : {
+        "type" : "RESPONSE_BODY",
+        "path" : "/v1/requests",
+        "method" : "POST",
+        "statusCode" : "500"
+      },
+      "properties" : {
+        "description" : "Internal Server Error"
+      }
+    } ]
+  },
+  "x-amazon-apigateway-request-validators" : {
+    "Validar corpo, parâmetros de string de consulta e cabeçalhos" : {
+      "validateRequestParameters" : true,
+      "validateRequestBody" : true
+    }
+  }
+}

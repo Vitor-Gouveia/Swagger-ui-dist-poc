@@ -5,6 +5,10 @@
   box-sizing: border-box;
 }
 
+input:disabled {
+  filter: opacity(70%);
+}
+
 ul {
   list-style: none;
 }
@@ -37,7 +41,8 @@ aside {
   gap: 40px;
 
   flex-shrink: 0;
-  width: 250px;
+  --sidebar-width: 350px;
+  width: var(--sidebar-width);
 }
 
 aside a {
@@ -46,14 +51,20 @@ aside a {
 }
 
 aside img {
-  width: 100%;
+  width: 50%;
   height: auto;
 }
+
+/* toc */
 
 aside ul {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+aside ul a {
+  word-break: break-all;
 }
 
 aside ul a:hover {
@@ -99,9 +110,29 @@ section > div {
   padding: 0px;
 }
 
-[data-code="400"] {
+[data-code="400"],
+[data-code="401"],
+[data-code="404"],
+[data-code="500"],
+[data-code="501"] {
   border: 1px solid hsl(360, 99%, 69%);
   background: hsla(360, 100%, 70%, 0.4);
+}
+
+tbody tr {
+  margin: 20px 0px !important;
+}
+
+tbody tr td {
+  padding: 20px 0px !important;
+}
+
+tbody tr td:first-child {
+  padding-left: 20px !important;
+}
+
+tbody tr td:last-child {
+  padding-left: 20px !important;
 }
 
 .opblock-tag-section h3 {
